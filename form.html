@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<style>
+
+        #notifies {
+            position: fixed;
+            width: 100vw;
+            top: 0;
+        }
+        #notifies .alert {
+            max-width: 80vw;
+            margin: 0 auto;
+        }
+
+	</style>
+</head>
+<body>
+	<div class="container">
+
+		<form id="test" novalidate>
+			<div class="form-group">
+				<label for="exampleInputEmail1">Email address</label>
+				<input 
+				type="email" 
+				name="email" 
+				class="form-control" 
+				id="exampleInputEmail1" 
+				aria-describedby="emailHelp" 
+				placeholder="Enter email"
+				autocomplete="off"
+				minlength="8" 
+				required>
+				<div class="invalid-feedback">
+					Please choose a Email address.
+				</div>
+				<div class="valid-feedback">
+					Choose a Email address.
+				</div>
+				<small id="emailHelp" class="form-text text-muted">Длина адоеса минимум 8 символов.</small>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputPassword1">Password</label>
+				<input 
+				type="password" 
+				name="password" 
+				class="form-control" 
+				aria-describedby="emailHelp" 
+				placeholder="Password"
+				autocomplete="off">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputPassword1">Phone number</label>
+				<input 
+				type="text" 
+				name="phone" 
+				class="form-control" 
+				id="exampleInputPhone" 
+				aria-describedby="phoneHelp" 
+				placeholder="Phone number"
+				autocomplete="off"
+				pattern="2-[0-9]{3}-[0-9]{3}"
+				required>
+				<div class="invalid-feedback">
+					Не соответствует паттерну
+				</div>
+				<div class="valid-feedback">
+					Все четко!
+				</div>
+				<small id="phoneHelp" class="form-text text-muted">Введите телефон в формате 2-xxx-xxx, где вместо x должна быть цифра</small>
+			</div>
+			<div class="form-group">
+				<label for="exampleFormControlSelect1">Example select</label>
+				<select 
+				name="select" 
+				class="form-control custom-select" 
+				id="exampleFormControlSelect1">
+					<option>10000</option>
+					<option>2000</option>
+					<option>300</option>
+					<option>400</option>
+					<option>50</option>
+				</select>
+			</div>
+			<div class="form-check">
+				<input 
+				type="checkbox" 
+				name="checkbox" 
+				class="form-check-input" 
+				id="exampleCheck1"
+				autocomplete="off">
+				<label class="form-check-label" for="exampleCheck1">Check me out</label>
+			</div>
+
+			<div class="custom-control custom-checkbox my-1 mr-sm-2">
+				<input 
+				type="checkbox" 
+				name="checkbox2" 
+				class="custom-control-input" 
+				id="customControlInline"
+				required>
+				<label class="custom-control-label" for="customControlInline">Remember my preference</label>
+			</div>
+
+			<button type="submit" class="btn btn-primary" id="submitForm">Submit</button>
+		</form>
+
+		<p id="output"></p>
+	</div>
+	
+	<div id="notifies"></div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+	<script>
+		// [].slice.call(list);	
+
+	    Notify = {				
+	        TYPE_INFO: 0,				
+	        TYPE_SUCCESS: 1,				
+	        TYPE_WARNING: 2,				
+	        TYPE_DANGER: 3,								
+
+	        generate: function (aText, aOptHeader, aOptType_int) {					
+	            var lTypeIndexes = [this.TYPE_INFO, this.TYPE_SUCCESS, this.TYPE_WARNING, this.TYPE_DANGER];					
+	            var ltypes = ['alert-info', 'alert-success', 'alert-warning', 'alert-danger'];										
+	            var ltype = ltypes[this.TYPE_INFO];					
+
+	            if (aOptType_int !== undefined && lTypeIndexes.indexOf(aOptType_int) !== -1) {						
+	                ltype = ltypes[aOptType_int];					
+	            }										
+
+	            var lText = '';					
+	            if (aOptHeader) {						
+	                lText += "<h4>"+aOptHeader+"</h4>";					
+	            }					
+	            lText += "<p>"+aText+"</p>";										
+	            var lNotify_e = $("<div class='alert "+ltype+"'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span></button>"+lText+"</div>");					
+
+	            setTimeout(function () {						
+	                lNotify_e.alert('close');					
+	            }, 4000);					
+	            lNotify_e.appendTo($("#notifies"));				
+	        }			
+	    };	
+
+		(function() {	
+
+			function toJSONString( form ) {
+				var obj = {};
+				var elements = form.querySelectorAll( "input, select, textarea" );
+				for( var i = 0; i < elements.length; ++i ) {
+					var element = elements[i];
+					var name = element.name;
+					var value = element.value;
+					var checked = element.checked;
+
+					if( name ) {
+						if(element.type == "checkbox") {
+							obj[ name ] = checked;
+						} else {
+							obj[ name ] = value;
+						}						
+					}
+				}
+
+				return JSON.stringify( obj );
+			}
+
+			document.addEventListener( "DOMContentLoaded", function() {
+				var form = document.getElementById( "test" );
+				var output = document.getElementById( "output" );
+				form.addEventListener( "submit", function( e ) {
+					e.preventDefault();
+
+					if (form.checkValidity() === false) {
+						Notify.generate('Форма заполнена не корректно. Обратите внимание на подсвеченные поля с ошибками', 'Внимание!', 3);
+						e.preventDefault();
+						e.stopPropagation();
+					} else {
+						var json = toJSONString( this );
+						output.innerHTML = '<strong>Результат:</strong> ' + json;
+					}
+
+					form.classList.add('was-validated');
+
+				}, false);
+
+			});
+
+		})();
+
+
+
+	</script>
+
+</body>
+</html>
